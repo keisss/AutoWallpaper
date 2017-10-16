@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "cn.keiss.autowallpaper"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -15,16 +16,30 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
-}
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
+    dependencies {
+        compile fileTree(include: ['*.jar'], dir: 'libs')
+        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+            exclude group: 'com.android.support', module: 'support-annotations'
+        })
+        compile 'com.android.support:appcompat-v7:26.+'
+        compile 'com.android.support:design:26.+'
+        compile 'com.android.support.constraint:constraint-layout:1.0.2'
+        compile 'com.github.bumptech.glide:glide:4.2.0'
+        compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+        compile 'org.greenrobot:greendao:3.2.2'
+        compile(name: 'matisse', ext: 'aar')
+        compile(name: 'menufab',ext: 'aar')
+        compile 'com.github.codekidX:storage-chooser:2.0.2'
+        testCompile 'junit:junit:4.12'
+        annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+    }
 }

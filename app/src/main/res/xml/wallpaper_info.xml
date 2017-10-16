@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:author="@string/app_name"
+    android:description="@string/app_name"
+    android:settingsActivity="cn.keiss.autowallpaper.MainActivity"
+    android:thumbnail="@drawable/ic_android_black_24dp" />
