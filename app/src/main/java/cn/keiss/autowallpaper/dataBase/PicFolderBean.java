@@ -10,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class PicFolderBean {
-    @Id
+    @Id(autoincrement = true)
     private Long id;
     @Property(nameInDb = "FOLDER_PATH")
     private String picFolderPath;

@@ -2,7 +2,6 @@ package cn.keiss.autowallpaper.adapter.recyclerView;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +29,9 @@ public class FolderGridViewAdapter extends BaseQuickAdapter<FolderViewItem,Folde
     @Override
     protected void convert(FolderViewHolder helper, FolderViewItem item) {
         helper.tvFolderName.setText(item.getFolderName());
+        if(-1 != item.getFolderSrc()){
+            helper.ivFolderPic.setImageResource(item.getFolderSrc());
+        }
         if (item.isTagDelete()){
             helper.ivDeleteTag.setVisibility(View.VISIBLE);
         }else

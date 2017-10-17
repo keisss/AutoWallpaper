@@ -12,6 +12,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    greendao {
+        //版本号，升级时可配置
+        schemaVersion 1
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,6 +30,7 @@ android {
             dirs 'libs'
         }
     }
+
 
     dependencies {
         compile fileTree(include: ['*.jar'], dir: 'libs')

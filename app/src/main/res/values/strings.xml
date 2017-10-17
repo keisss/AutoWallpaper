@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AutoWallpaper</string>
     <string name="setting_pic">setting_pic</string>
+    <string name="add_folder_err">添加文件夹错误</string>
 </resources>

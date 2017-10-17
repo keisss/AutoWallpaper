@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -35,29 +36,40 @@
                android:layout_marginRight="15dp" />
            </android.support.v7.widget.Toolbar>
    </android.support.design.widget.AppBarLayout>
-
-
-
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        android:layout_marginTop="8dp" />
-
-    <android.support.design.widget.FloatingActionButton
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginLeft="8dp" />
+    <cn.keiss.menufab.view.MenuFloatingActionButton
         android:id="@+id/fab_add_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/ic_add_black_24dp"/>
+        app:fab_src="@drawable/ic_add_black_24dp"
+        app:fab_background_color="@color/colorAccent"
+        app:background_color="#ffffff">
+        <cn.keiss.menufab.view.MenuView
+            android:id="@+id/fab_menu_folder"
+            app:item_icon="@drawable/ic_folder_black_24dp"
+            app:item_text="选取文件夹"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <cn.keiss.menufab.view.MenuView
+            android:id="@+id/fab_menu_pic"
+            app:item_text="选取图片"
+            app:item_icon="@drawable/ic_photo_camera_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </cn.keiss.menufab.view.MenuFloatingActionButton>
+
+
+
+
 </android.support.constraint.ConstraintLayout>
