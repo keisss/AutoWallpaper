@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bar_others"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/btn_others_only_fit_scale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="只显示适合屏幕比例的图片"/>
+    <Button
+        android:id="@+id/btn_others_only_fit_resolution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="只显示适合屏幕分辨率的图片"/>
+    <Button
+        android:id="@+id/btn_others_gif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启显示gif"/>
+    <Button
+        android:id="@+id/btn_others_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启显示视频"/>
+</LinearLayout>

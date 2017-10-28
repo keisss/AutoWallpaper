@@ -3,7 +3,8 @@ package cn.keiss.autowallpaper.bean;
 import android.graphics.drawable.Drawable;
 
 /**
- * Created by hekai on 2017/10/15.
+ * @author hekai
+ * @date 2017/10/15
  */
 
 public class FolderViewItem {

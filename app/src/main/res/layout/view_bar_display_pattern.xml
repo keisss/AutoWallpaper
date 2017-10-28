@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bar_display_pattern"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/btn_display_pattern_fill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="填充"/>
+    <Button
+        android:id="@+id/btn_display_pattern_fit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="适应"/>
+    <Button
+        android:id="@+id/btn_display_pattern_stretch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="拉伸"/>
+    <Button
+        android:id="@+id/btn_display_pattern_tile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="平铺"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跨区"/>
+    <Button
+        android:id="@+id/btn_display_pattern_magic_effect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="神奇效果"/>
+</LinearLayout>

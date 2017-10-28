@@ -2,11 +2,12 @@ package cn.keiss.autowallpaper.presenter;
 
 import java.util.List;
 
-import cn.keiss.autowallpaper.adapter.recyclerView.FolderGridViewAdapter;
+import cn.keiss.autowallpaper.adapter.recyclerview.FolderGridViewAdapter;
 import cn.keiss.autowallpaper.bean.FolderViewItem;
-import cn.keiss.autowallpaper.modelImpl.MainDataImpl;
-import cn.keiss.autowallpaper.modelInterface.MainDataSource;
-import cn.keiss.autowallpaper.viewInterface.MainViewListener;
+import cn.keiss.autowallpaper.listener.OnAddFolderListener;
+import cn.keiss.autowallpaper.modelimpl.MainDataImpl;
+import cn.keiss.autowallpaper.modelinterface.MainDataSource;
+import cn.keiss.autowallpaper.viewinterface.MainViewListener;
 
 /**
  * Created by hekai on 2017/10/15.
@@ -32,8 +33,8 @@ public class MainPresenter {
     }
 
 
-    public boolean selectFolder(String folderPath){
-       return mainDataSource.selectFolder(folderPath);
+    public void selectFolder(String folderPath, OnAddFolderListener listener){
+        mainDataSource.selectFolder(folderPath,listener);
     }
 
     public boolean deleteFolder(int position,FolderGridViewAdapter adapter){
@@ -44,4 +45,6 @@ public class MainPresenter {
     public void prepareForDefaultFolder(){
         mainDataSource.prepareForDefaultFolder();
     }
+
+
 }
