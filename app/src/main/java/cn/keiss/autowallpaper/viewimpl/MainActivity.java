@@ -28,10 +28,11 @@ import cn.keiss.autowallpaper.adapter.recyclerview.FolderGridViewAdapter;
 import cn.keiss.autowallpaper.baselib.BaseActivity;
 import cn.keiss.autowallpaper.baselib.ToastUtil;
 import cn.keiss.autowallpaper.bean.FolderViewItem;
+import cn.keiss.autowallpaper.contract.MainContract;
 import cn.keiss.autowallpaper.listener.OnAddFolderListener;
 import cn.keiss.autowallpaper.presenter.MainPresenter;
 import cn.keiss.autowallpaper.service.SwitchWallpaperService;
-import cn.keiss.autowallpaper.viewinterface.MainViewListener;
+import cn.keiss.autowallpaper.util.schedulers.SchedulerProvider;
 import cn.keiss.menufab.listener.OnFloatActionButtonClickListener;
 import cn.keiss.menufab.listener.OnMenuItemClickListener;
 import cn.keiss.menufab.view.MenuFloatingActionButton;
@@ -39,7 +40,7 @@ import cn.keiss.menufab.view.MenuView;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener,MainViewListener {
+public class MainActivity extends BaseActivity<MainContract.Presenter> implements View.OnClickListener,MainContract.View{
     private Toolbar mToolbar;
     private RecyclerView mRecyclerView;
     private MenuFloatingActionButton mFabAddPic;
@@ -48,7 +49,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
 
     private FolderGridViewAdapter adapter;
 
-    private MainPresenter mainPresenter;
 
     //fab菜单是否打开的标记
     private boolean isFabMenuOpen = false;
@@ -81,13 +81,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
 
     @Override
     protected void loadData() {
-        mainPresenter = new MainPresenter(this);
         //向presenter请求加载文件夹
-        mainPresenter.prepareForDefaultFolder();
-        mainPresenter.setFolderViewItemData();
+        mPresenter.prepareForDefaultFolder();
+        mPresenter.setFolderViewItems();
         setRecyclerView();
         setMenuFab();
         setAlertDialog();
+    }
+
+    @Override
+    protected MainContract.Presenter onCreatePresenter() {
+        return new MainPresenter(this, SchedulerProvider.getInstance());
     }
 
     @Override
@@ -110,73 +114,62 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
         adapter.bindToRecyclerView(mRecyclerView);
         adapter.setEmptyView(R.layout.recycler_view_empty_view);
 
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (isLongClickedStatus){
-                    //如果进入多选状态
-                    if (position != 0){
-                        changeItemDeleteStatus(position);
-                    }else {
-                        ToastUtil.showToast(MainActivity.this,"不能删除默认文件夹");
-                    }
+        adapter.setOnItemClickListener((adapter, view, position) -> {
+            if (isLongClickedStatus){
+                //如果进入多选状态
+                if (position != 0){
+                    changeItemDeleteStatus(position);
                 }else {
-                    //不在多选状态短按
+                    ToastUtil.showToast(MainActivity.this,"不能删除默认文件夹");
                 }
-
+            }else {
+                //不在多选状态短按
             }
+
         });
-        adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+        adapter.setOnItemLongClickListener((adapter, view, position) -> {
 
-                if (!isLongClickedStatus){
+            if (!isLongClickedStatus){
 
-                    if (position != 0){
-                        isLongClickedStatus = true;
-                        changeButtonsDeleteSrc();
-                        changeItemDeleteStatus(position);
-                    }else {
-                        ToastUtil.showToast(MainActivity.this,"不能删除默认文件夹");
-                    }
-
+                if (position != 0){
+                    isLongClickedStatus = true;
+                    changeButtonsDeleteSrc();
+                    changeItemDeleteStatus(position);
+                }else {
+                    ToastUtil.showToast(MainActivity.this,"不能删除默认文件夹");
                 }
-                //长按
-                return true;
+
             }
+            //长按
+            return true;
         });
     }
 
 
     /*初始化fabMenu*/
     private void setMenuFab(){
-        mFabAddPic.setOnFabClickListener(new OnFloatActionButtonClickListener() {
-            @Override
-            public void onClick() {
-                if (isLongClickedStatus){
-                    isLongClickedStatus = false;
-                    hideAllDeleteTag();
-                    changeButtonsDeleteSrc();
+        mFabAddPic.setOnFabClickListener(() -> {
+            if (isLongClickedStatus){
+                isLongClickedStatus = false;
+                hideAllDeleteTag();
+                changeButtonsDeleteSrc();
 
-                }else {
-                    isFabMenuOpen = !isFabMenuOpen;
-                }
-
+            }else {
+                isFabMenuOpen = !isFabMenuOpen;
             }
+
         });
-        mFabAddPic.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            @Override
-            public void onClick(MenuView menuView, int i) {
-                switch (i){
-                    case 0:
-                        //folder
-                       selectFolder();
-                        break;
-                    case 1:
-                        //pic
-                        selectPic();
-                        break;
-                }
+        mFabAddPic.setOnMenuItemClickListener((menuView, i) -> {
+            switch (i){
+                case 0:
+                    //folder
+                   selectFolder();
+                    break;
+                case 1:
+                    //pic
+                    selectPic();
+                    break;
+                default:
             }
         });
     }
@@ -198,12 +191,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
         alertDialog.setTitle("添加文件夹");
         alertDialog.setMessage("正在添加文件夹");
         alertDialog.setCancelable(false);
-        alertDialog.setButton(BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        alertDialog.setButton(BUTTON_POSITIVE, "确定", (dialog, which) -> dialog.dismiss());
     }
 
     private void showAlertDialog(){
@@ -247,9 +235,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
     }
 
     @Override
-    public boolean addFolderFinish() {
-        return false;
+    public void addFolderSuccess() {
+        mPresenter.updateFolderViewItems(adapter);
+        addSuccessDialog();
     }
+
+    @Override
+    public void addFolderHaveAdded() {
+        //已经添加了该文件夹
+        haveAddDialog();
+    }
+
+    @Override
+    public void addFolderFailed() {
+        //添加文件夹错误
+        addFailedDialog();
+    }
+
+    @Override
+    public void deleteFolderSuccess() {
+
+    }
+
+    @Override
+    public void deleteFolderFailed() {
+
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -272,14 +285,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
                 .setType(StorageChooser.DIRECTORY_CHOOSER)
                 .build();
         chooser.show();
-        chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
-            @Override
-            public void onSelect(final String s) {
-                showAlertDialog();
+        chooser.setOnSelectListener(s -> {
+            showAlertDialog();
 
-                onSelectedFolder(s);
+            onSelectedFolder(s);
 
-            }
         });
     }
     //选择图片
@@ -297,33 +307,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,M
 
     //选择添加文件夹之后的回调
     private void onSelectedFolder(String folderPath){
-        OnAddFolderListener listener = new OnAddFolderListener() {
-            @Override
-            public void onSuccess() {
-                mainPresenter.updateFolderViewItemsData(adapter);
-                addSuccessDialog();
-            }
-
-            @Override
-            public void onFailed() {
-                //添加文件夹错误
-                addFailedDialog();
-            }
-
-            @Override
-            public void onHaveAdded() {
-                //已经添加了该文件夹
-                haveAddDialog();
-            }
-        };
-        mainPresenter.selectFolder(folderPath,listener);
+        mPresenter.selectFolder(folderPath);
      }
 
     //执行删除操作
     private void execDelete(){
         for (int i=0; i<adapter.getItemCount();i++){
             if (selectDeleteItems.get(i)){
-                mainPresenter.deleteFolder(i,adapter);
+                mPresenter.deleteFolder(i,adapter);
             }
         }
 

@@ -3,6 +3,7 @@ package cn.keiss.autowallpaper.service;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
@@ -29,7 +30,8 @@ import cn.keiss.autowallpaper.R;
 public class SwitchWallpaperService extends WallpaperService {
 
 
-
+    private static final String DISPLAY_EFFECT = "display_effect";
+    private final String SWITCH_TIME  = "switch_time" ;
     //淡出淡入
     private final int SWITCH_EFFECT_FADE_OVER = 1;
     //转盘
@@ -38,6 +40,8 @@ public class SwitchWallpaperService extends WallpaperService {
     private final int SWITCH_EFFECT_CUBE = 6;
     //层叠
     private final int SWITCH_EFFECT_STACK = 4;
+
+    private SharedPreferences.OnSharedPreferenceChangeListener listener ;
 
 
     @Override
@@ -98,6 +102,11 @@ public class SwitchWallpaperService extends WallpaperService {
             //此时surface还没有准备好
             Log.e("create","engine");
 
+            listener  = (sharedPreferences, key) -> {
+                changeType = sharedPreferences.getInt(DISPLAY_EFFECT,0);
+                changeTime = sharedPreferences.getInt(SWITCH_TIME,0);
+            };
+
 
 
             paintA = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -112,6 +121,9 @@ public class SwitchWallpaperService extends WallpaperService {
 
             bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.hezhipin610039);
             bitmap2 = BitmapFactory.decodeResource(getResources(),R.drawable.u012861467);
+
+
+
 
             switch (changeType){
                 case SWITCH_EFFECT_FADE_OVER:
@@ -394,7 +406,8 @@ public class SwitchWallpaperService extends WallpaperService {
 
         }
 
-            //绘制精致的bitmap
+
+        //绘制静止的bitmap
         private void drawStaticPic(Bitmap bitmap){
 
                 Canvas canvas = getSurfaceHolder().lockCanvas();

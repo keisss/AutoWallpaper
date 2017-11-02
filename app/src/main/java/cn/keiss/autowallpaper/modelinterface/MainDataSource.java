@@ -28,10 +28,10 @@ public interface MainDataSource {
     /**
      * 添加文件夹后
      * @param folderPath 文件夹路径
-     * @param listener 添加文件夹的回调
      * @return 是否成功添加
      */
-    void selectFolder(String folderPath, OnAddFolderListener listener);
+    void selectFolder(String folderPath);
+
 
     boolean deleteFolder(int position,FolderGridViewAdapter adapter);
 

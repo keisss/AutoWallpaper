@@ -9,11 +9,22 @@ import android.support.v7.app.AppCompatActivity;
  * Activity的基类
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity {
+    protected  P mPresenter;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        mPresenter = onCreatePresenter();
+        if (null != mPresenter){
+            mPresenter.subscribe();
+        }else {
+            throw new NullPointerException("null presenter created");
+        }
 
         initVariables();
         initViews(savedInstanceState);
@@ -21,6 +32,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null){
+            mPresenter.unSubscribe();
+        }
+    }
 
     /**
      * 参数初始化
@@ -40,4 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected abstract void loadData();
 
+
+    protected abstract P onCreatePresenter();
 }

@@ -2,10 +2,13 @@ package cn.keiss.autowallpaper.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Matrix;
 import android.support.annotation.IntDef;
+import android.support.v4.util.LruCache;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.LinkedHashMap;
 
 /**
  * Created by hekai on 2017/10/20.

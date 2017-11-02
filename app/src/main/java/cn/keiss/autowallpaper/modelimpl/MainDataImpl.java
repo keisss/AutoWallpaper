@@ -47,6 +47,7 @@ public class MainDataImpl implements MainDataSource {
 
 
 
+
     @Override
     public List<FolderViewItem> setFolderViewItems() {
         List<PicFolderBean> picFolders = picFolderBeanDao.loadAll();
@@ -89,16 +90,19 @@ public class MainDataImpl implements MainDataSource {
         //TODO
     }
 
-    @Override
-    public void selectFolder(final String folderPath, final OnAddFolderListener listener) {
-        final String folderName = getFileName(folderPath);
-        Log.e(folderPath+"",folderName+"");
-        if (null !=folderName && null !=folderPath){
-            execAddFolderAndPic(folderName,folderPath,listener);
 
-        }else {
-            listener.onFailed();
-        }
+
+
+    @Override
+    public void selectFolder(final String folderPath) {
+//        final String folderName = getFileName(folderPath);
+//        Log.e(folderPath+"",folderName+"");
+//        if (null !=folderName && null !=folderPath){
+//            execAddFolderAndPic(folderName,folderPath,listener);
+//
+//        }else {
+//            listener.onFailed();
+//        }
     }
 
     @Override
@@ -108,8 +112,9 @@ public class MainDataImpl implements MainDataSource {
             picFolderBeanDao.deleteByKey(item.getId());
             adapter.notifyItemRemoved(position);
             return true;
-        }else
+        }else {
             return false;
+        }
     }
 
     @Override
@@ -138,31 +143,6 @@ public class MainDataImpl implements MainDataSource {
 
     private void execAddFolderAndPic(final String folderName, final String folderPath, final OnAddFolderListener listener){
         final Handler handler = new Handler();
-
-        Function dataAction = new Function<String,String>() {
-
-            @Override
-            public String apply(String o) throws Exception {
-                return null;
-            }
-        };
-
-        Action viewAction = new Action() {
-            @Override
-            public void run() throws Exception {
-
-            }
-        };
-        Observable.just("")
-                .observeOn(Schedulers.io())
-                .map(dataAction)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-
-
-
-
-
 
         //输入合法
         if (checkHaveAdded(folderPath)){
