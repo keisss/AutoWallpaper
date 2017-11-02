@@ -1,6 +1,5 @@
 package cn.keiss.autowallpaper.presenter;
 
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
@@ -17,13 +16,11 @@ import cn.keiss.autowallpaper.database.PicFileBean;
 import cn.keiss.autowallpaper.database.PicFileBeanDao;
 import cn.keiss.autowallpaper.database.PicFolderBean;
 import cn.keiss.autowallpaper.database.PicFolderBeanDao;
-import cn.keiss.autowallpaper.listener.OnAddFolderListener;
 import cn.keiss.autowallpaper.util.schedulers.BaseSchedulerProvider;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author hekai

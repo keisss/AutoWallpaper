@@ -1,4 +1,4 @@
-package cn.keiss.autowallpaper.viewimpl;
+package cn.keiss.autowallpaper.view;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

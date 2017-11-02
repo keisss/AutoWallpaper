@@ -31,7 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".viewimpl.MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,9 +66,9 @@
                 android:resource="@xml/wallpaper_info" />
         </service>
 
-        <activity android:name=".viewimpl.SettingActivity" />
-        <activity android:name=".viewimpl.AddPicActivity" />
-        <activity android:name=".viewimpl.TestActivity">
+        <activity android:name=".view.SettingActivity" />
+        <activity android:name=".view.AddPicActivity" />
+        <activity android:name=".view.TestActivity">
 
         </activity>
     </application>

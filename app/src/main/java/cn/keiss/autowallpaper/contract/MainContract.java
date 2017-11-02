@@ -6,10 +6,6 @@ import cn.keiss.autowallpaper.adapter.recyclerview.FolderGridViewAdapter;
 import cn.keiss.autowallpaper.baselib.BasePresenter;
 import cn.keiss.autowallpaper.baselib.BaseView;
 import cn.keiss.autowallpaper.bean.FolderViewItem;
-import cn.keiss.autowallpaper.listener.OnAddFolderListener;
-import cn.keiss.autowallpaper.modelimpl.MainDataImpl;
-import cn.keiss.autowallpaper.modelinterface.MainDataSource;
-import cn.keiss.autowallpaper.viewinterface.MainViewListener;
 
 /**
  * @author hekai

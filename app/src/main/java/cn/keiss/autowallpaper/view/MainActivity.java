@@ -1,8 +1,7 @@
-package cn.keiss.autowallpaper.viewimpl;
+package cn.keiss.autowallpaper.view;
 
 import android.app.WallpaperManager;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -16,7 +15,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -29,14 +28,10 @@ import cn.keiss.autowallpaper.baselib.BaseActivity;
 import cn.keiss.autowallpaper.baselib.ToastUtil;
 import cn.keiss.autowallpaper.bean.FolderViewItem;
 import cn.keiss.autowallpaper.contract.MainContract;
-import cn.keiss.autowallpaper.listener.OnAddFolderListener;
 import cn.keiss.autowallpaper.presenter.MainPresenter;
 import cn.keiss.autowallpaper.service.SwitchWallpaperService;
 import cn.keiss.autowallpaper.util.schedulers.SchedulerProvider;
-import cn.keiss.menufab.listener.OnFloatActionButtonClickListener;
-import cn.keiss.menufab.listener.OnMenuItemClickListener;
 import cn.keiss.menufab.view.MenuFloatingActionButton;
-import cn.keiss.menufab.view.MenuView;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.keiss.autowallpaper.viewimpl.TestActivity">
+    tools:context="cn.keiss.autowallpaper.view.TestActivity">
     <cn.keiss.autowallpaper.service.Custom3DView
         android:layout_height="250dp"
         android:layout_width="250dp"
