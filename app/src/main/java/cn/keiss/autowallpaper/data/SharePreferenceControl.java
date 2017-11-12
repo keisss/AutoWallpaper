@@ -2,13 +2,10 @@ package cn.keiss.autowallpaper.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Matrix;
 import android.support.annotation.IntDef;
-import android.support.v4.util.LruCache;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.LinkedHashMap;
 
 /**
  * Created by hekai on 2017/10/20.
@@ -21,7 +18,7 @@ public class SharePreferenceControl {
     private  final String UserSharePreferenceName = "sharePreference";
 
 
-    @IntDef({DIAPLAY_EFFECT_FROSTED_GLASS,
+    @IntDef({DISPLAY_EFFECT_FROSTED_GLASS,
             DISPLAY_EFFECT_BLACK_WHITE,
             DISPLAY_EFFECT_MOVE_WITH_SCREEN,
             DISPLAY_EFFECT_VINTAGE})
@@ -30,7 +27,7 @@ public class SharePreferenceControl {
 
 
 
-    private static final int DIAPLAY_EFFECT_FROSTED_GLASS = 1;
+    private static final int DISPLAY_EFFECT_FROSTED_GLASS = 1;
     private static final int DISPLAY_EFFECT_BLACK_WHITE = 2;
     private static final int DISPLAY_EFFECT_MOVE_WITH_SCREEN = 3;
     private static final int DISPLAY_EFFECT_VINTAGE = 4;
@@ -46,8 +43,10 @@ public class SharePreferenceControl {
     private final int SWITCH_EFFECT_CUBE = 6;
     private final int SWITCH_EFFECT_JALOUSIE = 7;
     private final String SWITCH_EFFECT = "switch_effect";
+
     private final int SWITCH_ORDER_RANDOM = 1;
     private final int SWITCH_ORDER_IN_TURN = 2;
+
     private final String SWITCH_ORDER = "switch_order";
     private final String SWITCH_TIME  = "switch_time" ;
     private final int DISPLAY_TYPE_FILL = 1;

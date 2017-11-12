@@ -68,9 +68,6 @@
 
         <activity android:name=".view.SettingActivity" />
         <activity android:name=".view.AddPicActivity" />
-        <activity android:name=".view.TestActivity">
-
-        </activity>
     </application>
 
 </manifest>

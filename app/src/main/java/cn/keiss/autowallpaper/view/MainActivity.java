@@ -102,6 +102,55 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
     }
 
 
+
+
+    @Override
+    public void setFolderDataList(List<FolderViewItem> folderDataList) {
+        adapter = new FolderGridViewAdapter(R.layout.view_item_sub_folder_view,folderDataList);
+    }
+
+    @Override
+    public void addFolderSuccess() {
+        mPresenter.updateFolderViewItems(adapter);
+        addSuccessDialog();
+    }
+
+    @Override
+    public void addFolderHaveAdded() {
+        //已经添加了该文件夹
+        haveAddDialog();
+    }
+
+    @Override
+    public void addFolderFailed() {
+        //添加文件夹错误
+        addFailedDialog();
+    }
+
+    @Override
+    public void deleteFolderSuccess() {
+
+    }
+
+    @Override
+    public void deleteFolderFailed() {
+
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        if (isFabMenuOpen){
+           //TODO 关闭菜单
+            Log.e("fab","open");
+        }else{
+            super.onBackPressed();
+        }
+
+    }
+
+
     /*初始化RecyclerView*/
     private void setRecyclerView(){
         GridLayoutManager layoutManager = new GridLayoutManager(this,4);
@@ -158,7 +207,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
             switch (i){
                 case 0:
                     //folder
-                   selectFolder();
+                    selectFolder();
                     break;
                 case 1:
                     //pic
@@ -224,51 +273,6 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
 
 
 
-    @Override
-    public void setFolderDataList(List<FolderViewItem> folderDataList) {
-        adapter = new FolderGridViewAdapter(R.layout.view_item_sub_folder_view,folderDataList);
-    }
-
-    @Override
-    public void addFolderSuccess() {
-        mPresenter.updateFolderViewItems(adapter);
-        addSuccessDialog();
-    }
-
-    @Override
-    public void addFolderHaveAdded() {
-        //已经添加了该文件夹
-        haveAddDialog();
-    }
-
-    @Override
-    public void addFolderFailed() {
-        //添加文件夹错误
-        addFailedDialog();
-    }
-
-    @Override
-    public void deleteFolderSuccess() {
-
-    }
-
-    @Override
-    public void deleteFolderFailed() {
-
-    }
-
-
-
-    @Override
-    public void onBackPressed() {
-        if (isFabMenuOpen){
-           //TODO 关闭菜单
-            Log.e("fab","open");
-        }else{
-            super.onBackPressed();
-        }
-
-    }
 
     //选择文件夹
     private void selectFolder(){

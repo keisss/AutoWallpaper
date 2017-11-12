@@ -48,7 +48,6 @@ public class MainPresenter implements MainContract.Presenter {
         this.addView = addView;
         this.schedulerProvider = schedulerProvider;
 
-
         mCompositeDisposable = new CompositeDisposable();
     }
 
@@ -56,6 +55,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void subscribe() {
         folderViewItems = new ArrayList<>();
+        addView.setFolderDataList(folderViewItems);
         picFolderBeanDao = BaseApplication.getDaoSession().getPicFolderBeanDao();
         picFileBeanDao = BaseApplication.getDaoSession().getPicFileBeanDao();
     }

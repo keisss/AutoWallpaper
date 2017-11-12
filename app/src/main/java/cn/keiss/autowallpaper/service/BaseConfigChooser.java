@@ -9,7 +9,8 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 
 /**
- * Created by hekai on 2017/10/23.
+ * @author hekai
+ * @date 2017/10/23
  */
 
 abstract class BaseConfigChooser implements GLSurfaceView.EGLConfigChooser {

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import cn.keiss.autowallpaper.R;
 import cn.keiss.autowallpaper.baselib.BaseActivity;
+import cn.keiss.autowallpaper.baselib.BasePresenter;
 
 /**
  * 用来设置各种特效的Activity
@@ -135,6 +136,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void loadData() {
 
+    }
+
+    @Override
+    protected BasePresenter onCreatePresenter() {
+        return null;
     }
 
     @Override
