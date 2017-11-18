@@ -29,7 +29,7 @@ import cn.keiss.autowallpaper.baselib.ToastUtil;
 import cn.keiss.autowallpaper.bean.FolderViewItem;
 import cn.keiss.autowallpaper.contract.MainContract;
 import cn.keiss.autowallpaper.presenter.MainPresenter;
-import cn.keiss.autowallpaper.service.SwitchWallpaperService;
+import cn.keiss.autowallpaper.service.TestService;
 import cn.keiss.autowallpaper.util.schedulers.SchedulerProvider;
 import cn.keiss.menufab.view.MenuFloatingActionButton;
 
@@ -265,7 +265,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
 
         intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                new ComponentName(MainActivity.this,SwitchWallpaperService.class));
+                new ComponentName(MainActivity.this,TestService.class));
 
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         MainActivity.this.startActivity(intent);

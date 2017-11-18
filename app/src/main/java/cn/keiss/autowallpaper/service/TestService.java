@@ -1,7 +1,10 @@
 package cn.keiss.autowallpaper.service;
 
+import android.graphics.BitmapFactory;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
+
+import cn.keiss.autowallpaper.R;
 
 /**
  * Created by hekai on 2017/10/20.
@@ -18,11 +21,14 @@ public class TestService extends GLWallpaperService {
     }
 
     class MyEngine extends GLWallpaperService.GLEngine {
-        TestRenderer renderer;
+        TestRenderer renderer ;
+
+
         public MyEngine() {
             super();
-            // handle prefs, other initialization
             renderer = new TestRenderer();
+            renderer.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hezhipin610039));
+            // handle prefs, other initialization
             setEGLContextClientVersion(2);
             setEGLConfigChooser(8,8,8,0,0,0);
             setRenderer(renderer);

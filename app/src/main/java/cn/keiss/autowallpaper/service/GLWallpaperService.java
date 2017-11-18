@@ -18,7 +18,8 @@ import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Created by hekai on 2017/10/20.
+ * @author hekai
+ * @date 2017/10/20
  */
 
 
@@ -185,59 +186,12 @@ public class GLWallpaperService extends WallpaperService {
         }
     }
 
-    /**
-     * Empty wrapper for {@link GLSurfaceView.Renderer}.
-     *
-     * @deprecated Use {@link GLSurfaceView.Renderer} instead.
-     */
-    @Deprecated
-    public interface Renderer extends GLSurfaceView.Renderer {
-    }
-}
 
-class LogWriter extends Writer {
-    private StringBuilder mBuilder = new StringBuilder();
 
-    @Override
-    public void close() {
-        flushBuilder();
-    }
-
-    @Override
-    public void flush() {
-        flushBuilder();
-    }
-
-    @Override
-    public void write(char[] buf, int offset, int count) {
-        for (int i = 0; i < count; i++) {
-            char c = buf[offset + i];
-            if (c == '\n') {
-                flushBuilder();
-            } else {
-                mBuilder.append(c);
-            }
-        }
-    }
-
-    private void flushBuilder() {
-        if (mBuilder.length() > 0) {
-            Log.v("GLSurfaceView", mBuilder.toString());
-            mBuilder.delete(0, mBuilder.length());
-        }
-    }
-}
 
 // ----------------------------------------------------------------------
 
-/**
- * Empty wrapper for {@link GLSurfaceView.EGLContextFactory}.
- *
- * @deprecated Use {@link GLSurfaceView.EGLContextFactory} instead.
- */
-@Deprecated
-interface EGLContextFactory extends GLSurfaceView.EGLContextFactory {
-}
+
 
 class DefaultContextFactory implements GLSurfaceView.EGLContextFactory {
     private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
@@ -259,14 +213,7 @@ class DefaultContextFactory implements GLSurfaceView.EGLContextFactory {
     }
 }
 
-/**
- * Empty wrapper for {@link GLSurfaceView.EGLWindowSurfaceFactory}.
- *
- * @deprecated Use {@link GLSurfaceView.EGLWindowSurfaceFactory} instead.
- */
-@Deprecated
-interface EGLWindowSurfaceFactory extends GLSurfaceView.EGLWindowSurfaceFactory {
-}
+
 
 class DefaultWindowSurfaceFactory implements GLSurfaceView.EGLWindowSurfaceFactory {
 
@@ -296,14 +243,7 @@ class DefaultWindowSurfaceFactory implements GLSurfaceView.EGLWindowSurfaceFacto
     }
 }
 
-/**
- * Empty wrapper for {@link GLSurfaceView.GLWrapper}.
- *
- * @deprecated Use {@link GLSurfaceView.GLWrapper} instead.
- */
-@Deprecated
-interface GLWrapper extends GLSurfaceView.GLWrapper {
-}
+
 
 class EglHelper {
 
@@ -835,11 +775,38 @@ class GLThread extends Thread {
     }
 }
 
-/**
- * Empty wrapper for {@link GLSurfaceView.EGLConfigChooser}.
- *
- * @deprecated Use {@link GLSurfaceView.EGLConfigChooser} instead.
- */
-@Deprecated
-interface EGLConfigChooser extends GLSurfaceView.EGLConfigChooser {
+
+
+    class LogWriter extends Writer {
+        private StringBuilder mBuilder = new StringBuilder();
+
+        @Override
+        public void close() {
+            flushBuilder();
+        }
+
+        @Override
+        public void flush() {
+            flushBuilder();
+        }
+
+        @Override
+        public void write(char[] buf, int offset, int count) {
+            for (int i = 0; i < count; i++) {
+                char c = buf[offset + i];
+                if (c == '\n') {
+                    flushBuilder();
+                } else {
+                    mBuilder.append(c);
+                }
+            }
+        }
+
+        private void flushBuilder() {
+            if (mBuilder.length() > 0) {
+                Log.v("GLSurfaceView", mBuilder.toString());
+                mBuilder.delete(0, mBuilder.length());
+            }
+        }
+    }
 }

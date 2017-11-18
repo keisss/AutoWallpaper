@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.os.Build;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -251,13 +252,18 @@ public class SwitchWallpaperService extends WallpaperService {
 
         //进行渐变绘制
         private void drawAlpha(ValueAnimator animator){
-            Canvas canvas = getSurfaceHolder().lockCanvas();
+            Canvas canvas = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                canvas = getSurfaceHolder().lockHardwareCanvas();
+            }else {
+                canvas = getSurfaceHolder().lockCanvas();
+            }
             int alphaA = (int)animator.getAnimatedValue();
             paintA.setAlpha(alphaA);
             paintB.setAlpha(255 - alphaA);
-            canvas.drawBitmap(bitmap2, null, region, paintA);
+           canvas.drawBitmap(bitmap2, null, region, paintA);
             canvas.drawBitmap(bitmap1,null,region,paintB);
-            Log.e("alphaaaa",String.valueOf(alphaA));
+            //Log.e("alphaaaa",String.valueOf(alphaA));
             getSurfaceHolder().unlockCanvasAndPost(canvas);
 
         }
@@ -395,8 +401,13 @@ public class SwitchWallpaperService extends WallpaperService {
         //绘制静止的bitmap
         private void drawStaticPic(Bitmap bitmap){
 
-                Canvas canvas = getSurfaceHolder().lockCanvas();
-                if (canvas != null) {
+            Canvas canvas = null;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                canvas = getSurfaceHolder().lockHardwareCanvas();
+            }else {
+                canvas = getSurfaceHolder().lockCanvas();
+            }
+            if (canvas != null) {
                     try {
                         region.set(0, 0, canvas.getWidth(), canvas.getHeight());
                         Paint paintA = new Paint();

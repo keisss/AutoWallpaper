@@ -1,7 +1,13 @@
 package cn.keiss.autowallpaper.service;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,119 +16,179 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import cn.keiss.autowallpaper.R;
+
+import static android.opengl.GLES10.GL_BLEND;
+import static android.opengl.GLES10.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.GL_SRC_ALPHA;
+
 /**
  * Created by hekai on 2017/10/23.
  */
 
-public class TestRenderer implements GLSurfaceView.Renderer {
-    private FloatBuffer vertexBuffer;
-    private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    "  gl_Position = vPosition;" +
-                    "}";
-
-    private final String fragmentShaderCode =
-            "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    "  gl_FragColor = vColor;" +
-                    "}";
-
+public  class TestRenderer implements GLSurfaceView.Renderer {
     private int mProgram;
+    private int glHPosition;
+    private int glHTexture;
+    private int glHCoordinate;
+    private int glHMatrix;
+    private int hIsHalf;
+    private int glHUxy;
+    private Bitmap mBitmap ;
 
-    static final int COORDS_PER_VERTEX = 3;
-    static float triangleCoords[] = {
-            0.5f,  0.5f, 0.0f, // top
-            -0.5f, -0.5f, 0.0f, // bottom left
-            0.5f, -0.5f, 0.0f  // bottom right
-    };
+    private FloatBuffer bPos;
+    private FloatBuffer bCoord;
 
-    private int mPositionHandle;
-    private int mColorHandle;
+    private int textureId;
+    private boolean isHalf;
+
+    private float uXY;
+    private String vertex = "attribute vec4 vPosition;\n" +
+            "attribute vec2 vCoordinate;\n" +
+            "uniform mat4 vMatrix;\n" +
+            "\n" +
+            "varying vec2 aCoordinate;\n" +
+            "\n" +
+            "void main(){\n" +
+            "    gl_Position=vMatrix*vPosition;\n" +
+            "    aCoordinate=vCoordinate;\n" +
+            "}";
+    private String  fragment = "precision mediump float;\n" +
+            "\n" +
+            "uniform sampler2D vTexture;\n" +
+            "varying vec2 aCoordinate;\n" +
+            "\n" +
+            "void main(){\n" +
+            "    gl_FragColor=texture2D(vTexture,aCoordinate);\n" +
+            "}";
 
     private float[] mViewMatrix=new float[16];
+    private float[] mProjectMatrix=new float[16];
+    private float[] mMVPMatrix=new float[16];
 
-    //顶点个数
-    private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
-    //顶点之间的偏移量
-    private final int vertexStride = COORDS_PER_VERTEX * 4; // 每个顶点四个字节
+    private final float[] sPos={
+            -1.0f,1.0f,
+            -1.0f,-1.0f,
+            1.0f,1.0f,
+            1.0f,-1.0f
+    };
 
-    private int mMatrixHandler;
-
-    //设置颜色，依次为红绿蓝和透明通道
-    float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-
+    private final float[] sCoord={
+            0.0f,0.0f,
+            0.0f,1.0f,
+            1.0f,0.0f,
+            1.0f,1.0f,
+    };
 
     public TestRenderer(){
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFuncSeparate(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA,
-                GLES20.GL_ONE, GLES20.GL_ONE);
-        GLES20.glClearColor(0, 0, 0, 0);
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                triangleCoords.length * 4);
+        ByteBuffer bb=ByteBuffer.allocateDirect(sPos.length*4);
         bb.order(ByteOrder.nativeOrder());
+        bPos=bb.asFloatBuffer();
+        bPos.put(sPos);
+        bPos.position(0);
+        ByteBuffer cc=ByteBuffer.allocateDirect(sCoord.length*4);
+        cc.order(ByteOrder.nativeOrder());
+        bCoord=cc.asFloatBuffer();
+        bCoord.put(sCoord);
+        bCoord.position(0);
 
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(triangleCoords);
-        vertexBuffer.position(0);
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
-                vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
-                fragmentShaderCode);
+    }
 
-        //创建一个空的OpenGLES程序
-        mProgram = GLES20.glCreateProgram();
-        //将顶点着色器加入到程序
-        GLES20.glAttachShader(mProgram, vertexShader);
-        //将片元着色器加入到程序中
-        GLES20.glAttachShader(mProgram, fragmentShader);
-        //连接到着色器程序
-        GLES20.glLinkProgram(mProgram);
+    public void setHalf(boolean half){
+        this.isHalf=half;
+    }
+
+    public void setImageBuffer(int[] buffer,int width,int height){
+        mBitmap= Bitmap.createBitmap(buffer,width,height, Bitmap.Config.RGB_565);
+    }
+
+    public void setBitmap(Bitmap bitmap){
+        this.mBitmap=bitmap;
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        GLES20.glClearColor(1.0f,0.6f,1.0f,1.0f);
+        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+        mProgram=ShaderUtils.createProgram(vertex,fragment);
+        glHPosition=GLES20.glGetAttribLocation(mProgram,"vPosition");
+        glHCoordinate=GLES20.glGetAttribLocation(mProgram,"vCoordinate");
+        glHTexture=GLES20.glGetUniformLocation(mProgram,"vTexture");
+        glHMatrix=GLES20.glGetUniformLocation(mProgram,"vMatrix");
+        hIsHalf=GLES20.glGetUniformLocation(mProgram,"vIsHalf");
+        glHUxy=GLES20.glGetUniformLocation(mProgram,"uXY");
 
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0,0,width,height);
+
+        int w=mBitmap.getWidth();
+        int h=mBitmap.getHeight();
+        float sWH=w/(float)h;
+        float sWidthHeight=width/(float)height;
+        uXY=sWidthHeight;
+        if(width>height){
+            if(sWH>sWidthHeight){
+                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight*sWH,sWidthHeight*sWH, -1,1, 3, 5);
+            }else{
+                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight/sWH,sWidthHeight/sWH, -1,1, 3, 5);
+            }
+        }else{
+            if(sWH>sWidthHeight){
+                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -1/sWidthHeight*sWH, 1/sWidthHeight*sWH,3, 5);
+            }else{
+                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -sWH/sWidthHeight, sWH/sWidthHeight,3, 5);
+            }
+        }
+        //设置相机位置
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 5.0f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        //计算变换矩阵
+        Matrix.multiplyMM(mMVPMatrix,0,mProjectMatrix,0,mViewMatrix,0);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        //将程序加入到OpenGLES2.0环境
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT|GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glUseProgram(mProgram);
 
-        //获取顶点着色器的vPosition成员句柄
-        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
-        //启用三角形顶点的句柄
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-        //准备三角形的坐标数据
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                vertexStride, vertexBuffer);
-        //获取片元着色器的vColor成员的句柄
-        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-        //设置绘制三角形的颜色
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
-        //绘制三角形
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
-        //禁止顶点数组的句柄
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
+        GLES20.glUniform1i(hIsHalf,isHalf?1:0);
+        GLES20.glUniform1f(glHUxy,uXY);
+        GLES20.glUniformMatrix4fv(glHMatrix,1,false,mMVPMatrix,0);
+        GLES20.glEnableVertexAttribArray(glHPosition);
+        GLES20.glEnableVertexAttribArray(glHCoordinate);
+        GLES20.glUniform1i(glHTexture, 0);
+        textureId=createTexture();
+        GLES20.glVertexAttribPointer(glHPosition,2,GLES20.GL_FLOAT,false,0,bPos);
+        GLES20.glVertexAttribPointer(glHCoordinate,2,GLES20.GL_FLOAT,false,0,bCoord);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4);
+
+    }
+
+    private int createTexture(){
+        int[] texture=new int[1];
+        if(mBitmap!=null&&!mBitmap.isRecycled()){
+            //生成纹理
+            GLES20.glGenTextures(1,texture,0);
+            //生成纹理
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,texture[0]);
+            //设置缩小过滤为使用纹理中坐标最接近的一个像素的颜色作为需要绘制的像素颜色
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
+            //设置放大过滤为使用纹理中坐标最接近的若干个颜色，通过加权平均算法得到需要绘制的像素颜色
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_LINEAR);
+            //设置环绕方向S，截取纹理坐标到[1/2n,1-1/2n]。将导致永远不会与border融合
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_CLAMP_TO_EDGE);
+            //设置环绕方向T，截取纹理坐标到[1/2n,1-1/2n]。将导致永远不会与border融合
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_CLAMP_TO_EDGE);
+            //根据以上指定的参数，生成一个2D纹理
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
+            return texture[0];
+        }
+        return 0;
     }
 
 
-    public int loadShader(int type,String shaderCode){
-        int shader = GLES20.glCreateShader(type);
-        GLES20.glShaderSource(shader,shaderCode);
-        GLES20.glCompileShader(shader);
-        return shader;
-    }
 }
