@@ -3,6 +3,7 @@ package cn.keiss.autowallpaper.baselib;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import cn.keiss.autowallpaper.data.SharePreferenceControl;
 import cn.keiss.autowallpaper.database.DaoMaster;
 import cn.keiss.autowallpaper.database.DaoSession;
 
@@ -18,6 +19,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         setDatabase();
+        SharePreferenceControl.getInstance().setPreferences(this);
     }
 
 

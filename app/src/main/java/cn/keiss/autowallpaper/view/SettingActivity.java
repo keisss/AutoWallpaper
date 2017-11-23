@@ -1,5 +1,6 @@
 package cn.keiss.autowallpaper.view;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -7,15 +8,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.List;
+
+import cn.keiss.autowallpaper.AnimImageView;
 import cn.keiss.autowallpaper.R;
+import cn.keiss.autowallpaper.adapter.recyclerview.FolderGridViewAdapter;
 import cn.keiss.autowallpaper.baselib.BaseActivity;
 import cn.keiss.autowallpaper.baselib.BasePresenter;
+import cn.keiss.autowallpaper.bean.FolderViewItem;
+import cn.keiss.autowallpaper.contract.MainContract;
+import cn.keiss.autowallpaper.data.Fields;
 
 /**
  * 用来设置各种特效的Activity
@@ -26,7 +33,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private ImageButton mIbnClose;
     private ImageButton mIbnRevert;
     private ImageButton mIbnConfirm;
-    private ImageView mIvPreview;
+    private AnimImageView mIvPreview;
     private HorizontalScrollView mSettingThirdBar;
     private LinearLayout mSecondBarSwitchOrder;
     private Button mBtnSwitchInOrder;
@@ -135,12 +142,61 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void loadData() {
+        mIvPreview.setBitmapIn(BitmapFactory.decodeResource(getResources(),R.drawable.hezhipin610039));
+        mIvPreview.setBitmapOut(BitmapFactory.decodeResource(getResources(),R.drawable.jike));
+        mIvPreview.setAnimType(Fields.SWITCH_EFFECT_PAGE);
+        mIvPreview.startAnim();
 
     }
 
     @Override
     protected BasePresenter onCreatePresenter() {
-        return null;
+        return new MainContract.Presenter() {
+            @Override
+            public List<FolderViewItem> setFolderViewItems() {
+                return null;
+            }
+
+            @Override
+            public void updateFolderViewItems(FolderGridViewAdapter adapter) {
+
+            }
+
+            @Override
+            public void addedFolderViewItems(FolderGridViewAdapter adapter) {
+
+            }
+
+            @Override
+            public void deleteFolderViewItems(FolderGridViewAdapter adapter) {
+
+            }
+
+            @Override
+            public void selectFolder(String folderPath) {
+
+            }
+
+            @Override
+            public void deleteFolder(int position, FolderGridViewAdapter adapter) {
+
+            }
+
+            @Override
+            public void prepareForDefaultFolder() {
+
+            }
+
+            @Override
+            public void subscribe() {
+
+            }
+
+            @Override
+            public void unSubscribe() {
+
+            }
+        };
     }
 
     @Override
