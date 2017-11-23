@@ -11,12 +11,14 @@
         android:layout_weight="0.5"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="顺序"/>
+        android:text="顺序"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_switch_random"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
         android:background="@color/colorAccent"
-        android:text="随机"/>
+        android:text="随机"
+        android:onClick="onClick"/>
 </LinearLayout>

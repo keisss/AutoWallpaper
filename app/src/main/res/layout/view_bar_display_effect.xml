@@ -11,7 +11,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="毛玻璃" />
+        android:text="毛玻璃"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_display_effect_black_white"
@@ -19,7 +20,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="黑白" />
+        android:text="黑白"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_display_effect_move_with_screen"
@@ -27,7 +29,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="随屏幕移动" />
+        android:text="随屏幕移动"
+        android:onClick="onClick"/>
 
 
 

@@ -1,4 +1,4 @@
-package cn.keiss.autowallpaper;
+package cn.keiss.autowallpaper.customview;
 
 
 import android.animation.ValueAnimator;
@@ -117,6 +117,9 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
 
     public void setAnimType(@Fields.SWITCH_EFFECT int type){
         this.changeType = type;
+        animatorValue = null;
+        paintIn.reset();
+        paintOut.reset();
         switch (type) {
             case SWITCH_EFFECT_FADE_OVER:
                 // 使用ValueAnimator创建一个过程
@@ -154,7 +157,9 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
         }
 
 
-    //进行渐变绘制
+    /**
+     * 进行渐变绘制
+     */
     private void drawAlpha(Canvas canvas){
         int alpha = (int) animatorValue;
 
@@ -165,7 +170,9 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
         canvas.drawBitmap(mBitmapOut,null,region,paintOut);
     }
 
-    //进行移动绘制
+    /**
+     * 进行移动绘制
+     */
     private void drawPage(Canvas canvas){
         float changeTag = (Float) animatorValue;
 

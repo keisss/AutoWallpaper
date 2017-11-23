@@ -9,20 +9,24 @@
         android:id="@+id/btn_others_only_fit_scale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="只显示适合屏幕比例的图片"/>
+        android:text="只显示适合屏幕比例的图片"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_others_only_fit_resolution"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="只显示适合屏幕分辨率的图片"/>
+        android:text="只显示适合屏幕分辨率的图片"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_others_gif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开启显示gif"/>
+        android:text="开启显示gif"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_others_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开启显示视频"/>
+        android:text="开启显示视频"
+        android:onClick="onClick"/>
 </LinearLayout>

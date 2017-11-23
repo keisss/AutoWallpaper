@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="淡出淡入"/>
+        android:text="淡出淡入"
+        android:onClick="onClick"/>
 
 
     <Button
@@ -18,33 +19,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="翻页"/>
+        android:text="翻页"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_switch_stack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="层叠"/>
+        android:text="层叠"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_switch_rotate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="旋转"/>
+        android:text="旋转"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_switch_cube"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="方块"/>
+        android:text="方块"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/btn_switch_jalousie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="百叶窗"/>
+        android:text="百叶窗"
+        android:onClick="onClick"/>
 </LinearLayout>

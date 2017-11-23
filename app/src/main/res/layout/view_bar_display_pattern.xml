@@ -8,29 +8,35 @@
         android:id="@+id/btn_display_pattern_fill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="填充"/>
+        android:text="填充"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_display_pattern_fit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="适应"/>
+        android:text="适应"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_display_pattern_stretch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="拉伸"/>
+        android:text="拉伸"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_display_pattern_tile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="平铺"/>
+        android:text="平铺"
+        android:onClick="onClick"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="跨区"/>
+        android:text="跨区"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_display_pattern_magic_effect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="神奇效果"/>
+        android:text="神奇效果"
+        android:onClick="onClick"/>
 </LinearLayout>

@@ -3,7 +3,6 @@ package cn.keiss.autowallpaper.service;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
@@ -44,31 +43,29 @@ public class SwitchWallpaperService extends WallpaperService {
 
     private class DrawEngine extends Engine{
 
-        //是否可以进行第一次加载
-        private boolean firstChangeableFlag = false;
-        //每次变化之间的间隔
-        private long delayTime = 10000L /2;
-
         private @SWITCH_ORDER int switchOrder;
         private @SWITCH_EFFECT int switchEffect;
         private @DISPLAY_EFFECT int displayEffect;
         private @DISPLAY_TYPE int displayType;
         private long switchTime;
-
         private SharePreferenceControl control;
 
 
+        //是否可以进行第一次加载
+        private boolean firstSwitchFlag = false;
+        //每次变化之间的间隔
+        private long delayTime = 10000L /2;
         //顺序切换时此时显示的图片位置
-        private long nowPicId = 0;
+        private long nowPicId = -1;
 
 
 
         private ValueAnimator valueAnimator;
         private FleshPicManager manager;
         //正在显示的（第一期加载显示的）
-        private Bitmap bitmapIn;
-        //变换后显示的
         private Bitmap bitmapOut;
+        //变换后显示的
+        private Bitmap bitmapIn;
         private Rect region;
         private Paint paintIn;
         private Paint paintOut;
@@ -77,6 +74,12 @@ public class SwitchWallpaperService extends WallpaperService {
 
         DrawEngine() {
             Log.e("new","Engine");
+
+            control = SharePreferenceControl.getInstance();
+            manager = new FleshPicManager();
+            region = new Rect();
+            paintIn = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintOut = new Paint(Paint.ANTI_ALIAS_FLAG);
         }
 
         @Override
@@ -84,13 +87,6 @@ public class SwitchWallpaperService extends WallpaperService {
             super.onCreate(surfaceHolder);
             //此时surface还没有准备好
             Log.e("create","engine");
-
-
-            control = SharePreferenceControl.getInstance();
-            manager = new FleshPicManager();
-            region = new Rect();
-            paintIn = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paintOut = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
             freshPresence();
@@ -108,6 +104,9 @@ public class SwitchWallpaperService extends WallpaperService {
             super.onSurfaceCreated(holder);
             Log.e("surfaceCreate","engine");
             //surface准备好
+
+            //初始化第一二张图片
+            refreshPics();
 
             valueAnimator.addUpdateListener(animator -> {
 
@@ -131,25 +130,18 @@ public class SwitchWallpaperService extends WallpaperService {
                         break;
                     default:
                 }
-
             });
             valueAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     Log.e("end","end");
                     super.onAnimationEnd(animation);
-
+                    refreshPics();
                     if (isVisible()){
-
-                        refreshPics();
                         valueAnimator.start();
                     }
-
                 }
             });
-
-            //初始化第一二张图片
-            refreshPics();
         }
 
 
@@ -165,31 +157,24 @@ public class SwitchWallpaperService extends WallpaperService {
         public void onVisibilityChanged(boolean visible) {
             Log.e("surfaceVisiblyChange",String.valueOf(visible));
             //频繁被调用，初始化时会 调用一次Visible，调用一次Unvisible,再调用一次Visible
-
             if (visible){
-
                 // 初始化
-                if (firstChangeableFlag){
-                    firstChangeableFlag = false;
+                if (firstSwitchFlag){
+                    firstSwitchFlag = false;
                     Log.e("change","hiddenWhenShow");
-                    drawStaticPic(bitmapIn);
+                    drawStaticPic();
                     valueAnimator.start();
                 }
-
-                if (valueAnimator.isStarted()){
+                if (valueAnimator.isStarted() && valueAnimator.isPaused()){
                     valueAnimator.resume();
                 }
-
             }else {
-
                 if (valueAnimator.isStarted()){
                     valueAnimator.pause();
                 }else {
-                    firstChangeableFlag = true;
+                    firstSwitchFlag = true;
                 }
-
             }
-
         }
 
         @Override
@@ -197,6 +182,8 @@ public class SwitchWallpaperService extends WallpaperService {
             super.onDestroy();
             Log.e("sufacedestriye","engmine");
             valueAnimator.cancel();
+            bitmapOut.recycle();
+            bitmapIn.recycle();
         }
 
         @Override
@@ -204,11 +191,6 @@ public class SwitchWallpaperService extends WallpaperService {
             super.onSurfaceDestroyed(holder);
             Log.e("destroy","engine");
         }
-
-
-
-
-
 
 
 
@@ -224,8 +206,8 @@ public class SwitchWallpaperService extends WallpaperService {
             int alphaA = (int)animator.getAnimatedValue();
             paintIn.setAlpha(alphaA);
             paintOut.setAlpha(255 - alphaA);
-           canvas.drawBitmap(bitmapOut, null, region, paintIn);
-            canvas.drawBitmap(bitmapIn,null,region, paintOut);
+           canvas.drawBitmap(bitmapIn, null, region, paintIn);
+            canvas.drawBitmap(bitmapOut,null,region, paintOut);
             //Log.e("alphaaaa",String.valueOf(alphaA));
             getSurfaceHolder().unlockCanvasAndPost(canvas);
 
@@ -242,8 +224,8 @@ public class SwitchWallpaperService extends WallpaperService {
             Rect rect2 = new Rect(canvas.getWidth() - changeLength,0,canvas.getWidth()*2 - changeLength,canvas.getHeight());
 
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            canvas.drawBitmap(bitmapIn, null, rect1, paintIn);
-            canvas.drawBitmap(bitmapOut,null,rect2, paintOut);
+            canvas.drawBitmap(bitmapOut, null, rect1, paintIn);
+            canvas.drawBitmap(bitmapIn,null,rect2, paintOut);
             Log.e("alphaaaa",String.valueOf(changeLength));
             getSurfaceHolder().unlockCanvasAndPost(canvas);
         }
@@ -278,7 +260,7 @@ public class SwitchWallpaperService extends WallpaperService {
             canvas.save();
             canvas.concat(matrix);
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            canvas.drawBitmap(bitmapIn,null,region, paintIn);
+            canvas.drawBitmap(bitmapOut,null,region, paintIn);
             canvas.restore();
 
 
@@ -296,7 +278,7 @@ public class SwitchWallpaperService extends WallpaperService {
 
             canvas.save();
             canvas.concat(matrix);
-            canvas.drawBitmap(bitmapOut,null,region, paintIn);
+            canvas.drawBitmap(bitmapIn,null,region, paintIn);
             canvas.restore();
 
             getSurfaceHolder().unlockCanvasAndPost(canvas);
@@ -335,7 +317,7 @@ public class SwitchWallpaperService extends WallpaperService {
             canvas.save();
             canvas.concat(matrix);
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            canvas.drawBitmap(bitmapIn,null,region, paintIn);
+            canvas.drawBitmap(bitmapOut,null,region, paintIn);
             canvas.restore();
 
 
@@ -353,7 +335,7 @@ public class SwitchWallpaperService extends WallpaperService {
 
             canvas.save();
             canvas.concat(matrix);
-            canvas.drawBitmap(bitmapOut,null,region, paintIn);
+            canvas.drawBitmap(bitmapIn,null,region, paintIn);
             canvas.restore();
 
             getSurfaceHolder().unlockCanvasAndPost(canvas);
@@ -362,39 +344,28 @@ public class SwitchWallpaperService extends WallpaperService {
 
 
         //绘制静止的bitmap
-        private void drawStaticPic(Bitmap bitmap){
+        private void drawStaticPic(){
+            Canvas canvas;
 
-            Canvas canvas = null;
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    canvas = getSurfaceHolder().lockHardwareCanvas();
-                } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                canvas = getSurfaceHolder().lockHardwareCanvas();
+            } else {
                 canvas = getSurfaceHolder().lockCanvas();
             }
             if (canvas != null) {
+                try {
+                    region.set(0, 0, canvas.getWidth(), canvas.getHeight());
+                    canvas.drawBitmap(bitmapOut, null, region, paintOut);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
                     try {
-                        region.set(0, 0, canvas.getWidth(), canvas.getHeight());
-                        Paint paintA = new Paint();
-                        paintA.setFilterBitmap(true);
-                        canvas.drawBitmap(bitmap, null, region, paintA);
-
+                        getSurfaceHolder().unlockCanvasAndPost(canvas);
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-
-
-                        try {
-                            getSurfaceHolder().unlockCanvasAndPost(canvas);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                     }
-
-
-
+                }
             }
-
-
         }
 
 
@@ -417,23 +388,25 @@ public class SwitchWallpaperService extends WallpaperService {
                } catch (FileNotFoundException e) {
                    getInTurnNextPic();
                }
-
                return BitmapFactory.decodeStream(fis);
            }
         }
 
         private void refreshPics(){
-            if (bitmapOut != null){
-                bitmapIn = bitmapOut;
-                bitmapOut = getInTurnNextPic();
-            }else {
+            if (bitmapIn != null){
+                bitmapOut = bitmapIn;
                 bitmapIn = getInTurnNextPic();
+            }else {
                 bitmapOut = getInTurnNextPic();
+                bitmapIn = getInTurnNextPic();
             }
 
         }
 
 
+        /**
+         * 更新设置并重建动画
+         */
         private void freshPresence(){
             switchEffect = control.getSwitchEffect();
             switchOrder =  control.getSwitchOrder();
@@ -441,27 +414,26 @@ public class SwitchWallpaperService extends WallpaperService {
             displayType = control.getDisplayType();
             switchTime = control.getSwitchTime();
 
-            valueAnimator.cancel();
-
+            if (valueAnimator != null){
+                valueAnimator.cancel();
+                valueAnimator = null;
+            }
             switch (switchEffect) {
                 case SWITCH_EFFECT_FADE_OVER:
                     // 使用ValueAnimator创建一个过程
                     valueAnimator = ValueAnimator.ofInt(0, 255);
-
                     valueAnimator.setInterpolator(new AccelerateInterpolator());
-
                     break;
                 case SWITCH_EFFECT_PAGE:
                     // 使用ValueAnimator创建一个过程
                     valueAnimator = ValueAnimator.ofFloat(0, 1);
                     valueAnimator.setInterpolator(new AccelerateInterpolator());
-
                     break;
                 case SWITCH_EFFECT_CUBE:
                     //正方体变换
                     valueAnimator = ValueAnimator.ofFloat(0, 1);
                     valueAnimator.setInterpolator(new LinearInterpolator());
-
+                    break;
                 case Fields.SWITCH_EFFECT_DIAL:
                     break;
                 case Fields.SWITCH_EFFECT_JALOUSIE:
@@ -470,11 +442,14 @@ public class SwitchWallpaperService extends WallpaperService {
                     break;
                 case Fields.SWITCH_EFFECT_STACK:
                     break;
-                default:
+                default: break;
             }
-            valueAnimator.setDuration(switchTime);
-            valueAnimator.setStartDelay(delayTime);
 
+            if (valueAnimator != null) {
+                valueAnimator.setDuration(switchTime);
+                valueAnimator.setStartDelay(delayTime);
+                onVisibilityChanged(false);
+            }
         }
     }
 

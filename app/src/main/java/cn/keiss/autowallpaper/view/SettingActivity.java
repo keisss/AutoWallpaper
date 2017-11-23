@@ -2,6 +2,7 @@ package cn.keiss.autowallpaper.view;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.print.PrintJob;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cn.keiss.autowallpaper.AnimImageView;
+import cn.keiss.autowallpaper.customview.AnimImageView;
 import cn.keiss.autowallpaper.R;
 import cn.keiss.autowallpaper.adapter.recyclerview.FolderGridViewAdapter;
 import cn.keiss.autowallpaper.baselib.BaseActivity;
@@ -34,48 +35,71 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private ImageButton mIbnRevert;
     private ImageButton mIbnConfirm;
     private AnimImageView mIvPreview;
-    private HorizontalScrollView mSettingThirdBar;
-    private LinearLayout mSecondBarSwitchOrder;
+
+
     private Button mBtnSwitchInOrder;
     private Button mBtnSwitchRandom;
-    private LinearLayout mSecondBarSwitchEffect;
+
     private Button mBtnSwitchFadeOver;
     private Button mBtnSwitchPage;
     private Button mBtnSwitchStack;
     private Button mBtnSwitchRotate;
     private Button mBtnSwitchCube;
     private Button mBtnSwitchJalousie;
-    private RelativeLayout mSecondBarSwitchTime;
+
     private TextView mTvSwitchTime;
     private CheckBox mCheckBox;
     private SeekBar mSeekBar;
-    private HorizontalScrollView mSettingSecondBar;
-    private LinearLayout mBarDisplayEffect;
+
+
     private Button mBtnDisplayEffectFrostedGlass;
     private Button mBtnDisplayEffectBlackWhite;
     private Button mBtnDisplayEffectMoveWithScreen;
-    private LinearLayout mBarSwitchSetting;
-    private Button mBtnSwitchOrder;
-    private Button mBtnSwitchEffect;
-    private Button mBtnSwitchTime;
-    private LinearLayout mBarDisplayPattern;
+
+
+
     private Button mBtnDisplayPatternFill;
     private Button mBtnDisplayPatternFit;
     private Button mBtnDisplayPatternStretch;
     private Button mBtnDisplayPatternTile;
     private Button mBtnDisplayPatternMagicEffect;
-    private LinearLayout mBarOthers;
+
+
     private Button mBtnOthersOnlyFitScale;
     private Button mBtnOthersOnlyFitResolution;
     private Button mBtnOthersGif;
     private Button mBtnOthersVideo;
+
+
+    private LinearLayout mBarDisplayEffect;
+    //切换相关设置的bar
+    private LinearLayout mBarSwitchSetting;
+    private LinearLayout mBarDisplayPattern;
+    private LinearLayout mBarOthers;
+
+    //切换设置bar的btn
+    private Button mBtnSwitchOrder;
+    private Button mBtnSwitchEffect;
+    private Button mBtnSwitchTime;
+    private LinearLayout mSecondBarSwitchOrder;
+    private LinearLayout mSecondBarSwitchEffect;
+    private RelativeLayout mSecondBarSwitchTime;
+
+
+
+    //三级设置bar
     private HorizontalScrollView mSettingBar;
+    private HorizontalScrollView mSettingSecondBar;
+    private HorizontalScrollView mSettingThirdBar;
     private Button mBtnSettingDisplayEffect;
+    //切换设置
     private Button mBtnSettingSwitch;
+
+
     private Button mBtnSettingDisplayType;
     private Button mBtnSettingOthers;
 
-
+    private @Fields.SWITCH_EFFECT int switchEffect ;
 
 
 
@@ -136,7 +160,26 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         mBtnSettingDisplayType = findViewById(R.id.btn_setting_display_type);
         mBtnSettingOthers = findViewById(R.id.btn_setting_others);
 
-
+        mBtnDisplayEffectBlackWhite.setOnClickListener(this);
+        mBtnDisplayEffectFrostedGlass.setOnClickListener(this);
+        mBtnDisplayEffectMoveWithScreen.setOnClickListener(this);
+        mBtnDisplayPatternFill.setOnClickListener(this);
+        mBtnDisplayPatternFit.setOnClickListener(this);
+        mBtnDisplayPatternMagicEffect.setOnClickListener(this);
+        mBtnDisplayPatternStretch.setOnClickListener(this);
+        mBtnDisplayPatternTile.setOnClickListener(this);
+        mBtnOthersOnlyFitScale.setOnClickListener(this);
+        mBtnOthersOnlyFitResolution.setOnClickListener(this);
+        mBtnOthersGif.setOnClickListener(this);
+        mBtnOthersVideo.setOnClickListener(this);
+        mBtnSwitchInOrder.setOnClickListener(this);
+        mBtnSwitchRandom.setOnClickListener(this);
+        mBtnSwitchFadeOver.setOnClickListener(this);
+        mBtnSwitchPage.setOnClickListener(this);
+        mBtnSwitchStack.setOnClickListener(this);
+        mBtnSwitchRotate.setOnClickListener(this);
+        mBtnSwitchCube.setOnClickListener(this);
+        mBtnSwitchJalousie.setOnClickListener(this);
 
     }
 
@@ -144,8 +187,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected void loadData() {
         mIvPreview.setBitmapIn(BitmapFactory.decodeResource(getResources(),R.drawable.hezhipin610039));
         mIvPreview.setBitmapOut(BitmapFactory.decodeResource(getResources(),R.drawable.jike));
-        mIvPreview.setAnimType(Fields.SWITCH_EFFECT_PAGE);
-        mIvPreview.startAnim();
+
 
     }
 
@@ -211,8 +253,54 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             case R.id.ibn_confirm:
                 onConfirm();
                 break;
-
+            case R.id.btn_setting_switch:
+                //显示切换设置bar
+                setVisibleBar(mBarSwitchSetting);
+                break;
+            case R.id.btn_setting_display_effect:
+                setVisibleBar(mBarDisplayEffect);
+                break;
+            case R.id.btn_setting_display_type:
+                setVisibleBar(mBarDisplayPattern);
+                break;
+            case R.id.btn_setting_others:
+                setVisibleBar(mBarOthers);
+                break;
+            case R.id.btn_switch_effect:
+                setVisibleSecondBar(mSecondBarSwitchEffect);
+                break;
+            case R.id.btn_switch_order:
+                setVisibleSecondBar(mSecondBarSwitchOrder);
+                break;
+            case R.id.btn_switch_time:
+                setVisibleSecondBar(mSecondBarSwitchTime);
+                break;
+            case R.id.btn_switch_fade_over:
+                onDisplayEffectSet(Fields.SWITCH_EFFECT_FADE_OVER);
+                break;
+            case R.id.btn_switch_page:
+                onDisplayEffectSet(Fields.SWITCH_EFFECT_PAGE);
+                break;
+            default: break;
         }
+    }
+
+    //设置一级bar的显示
+    private void setVisibleBar(LinearLayout linearLayout){
+        mBarSwitchSetting.setVisibility(View.GONE);
+        mBarDisplayEffect.setVisibility(View.GONE);
+        mBarDisplayPattern.setVisibility(View.GONE);
+        mBarOthers.setVisibility(View.GONE);
+        linearLayout.setVisibility(View.VISIBLE);
+    }
+
+
+    private void setVisibleSecondBar(View view){
+        mSecondBarSwitchEffect.setVisibility(View.GONE);
+        mSecondBarSwitchOrder.setVisibility(View.GONE);
+        mSecondBarSwitchTime.setVisibility(View.GONE);
+        view.setVisibility(View.VISIBLE);
+
     }
 
 
@@ -225,7 +313,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    private void onDisplayEffectSet(){
-
+    private void onDisplayEffectSet(@Fields.SWITCH_EFFECT int switchEffect){
+        mIvPreview.setAnimType(switchEffect);
+        mIvPreview.startAnim();
     }
+
+
+
 }

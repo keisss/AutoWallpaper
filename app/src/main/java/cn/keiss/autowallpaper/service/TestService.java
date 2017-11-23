@@ -7,7 +7,8 @@ import android.view.SurfaceHolder;
 import cn.keiss.autowallpaper.R;
 
 /**
- * Created by hekai on 2017/10/20.
+ * @author hekai
+ * @date 2017/10/20
  */
 
 public class TestService extends GLWallpaperService {
@@ -15,6 +16,7 @@ public class TestService extends GLWallpaperService {
         super();
     }
 
+    @Override
     public WallpaperService.Engine onCreateEngine() {
         MyEngine engine = new MyEngine();
         return engine;
@@ -43,6 +45,7 @@ public class TestService extends GLWallpaperService {
 
         }
 
+        @Override
         public void onDestroy() {
             super.onDestroy();
             renderer = null;

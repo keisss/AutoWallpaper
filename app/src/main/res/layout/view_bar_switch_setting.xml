@@ -9,16 +9,19 @@
         android:id="@+id/btn_switch_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="切换顺序"/>
+        android:text="切换顺序"
+        android:onClick="onClick"/>
     <Button
         android:id="@+id/btn_switch_effect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="切换效果"
+        android:onClick="onClick"
         />
     <Button
         android:id="@+id/btn_switch_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="切换时间"/>
+        android:text="切换时间"
+        android:onClick="onClick"/>
 </LinearLayout>
