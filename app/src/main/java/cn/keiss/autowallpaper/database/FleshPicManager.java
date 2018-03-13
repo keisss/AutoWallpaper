@@ -19,7 +19,7 @@ public class FleshPicManager {
 
     public List<PicFileBean> getAllPic(){
          return picFileBeanDao.loadAll();
-    }
+}
 
     public void deleteUselessPic(long id){
         picFileBeanDao.deleteByKey(id);

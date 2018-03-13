@@ -86,7 +86,7 @@ public class SharePreferenceControl {
         editor.apply();
     }
     public int getSwitchTime(){
-        return getUserPreferences().getInt(SWITCH_TIME,10000);
+        return getUserPreferences().getInt(SWITCH_TIME,3000);
     }
     public void setDisplayType(int displayTypeId){
         SharedPreferences.Editor editor = getEditor();

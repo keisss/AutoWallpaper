@@ -4,8 +4,10 @@ package cn.keiss.autowallpaper.customview;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -72,7 +74,7 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
             drawEnable = false;
 
             if (changeType == -1){
-                throw new IllegalArgumentException("don't set Anim type in setAnimType()");
+                throw new IllegalArgumentException("not set Anim type in setAnimType()");
             }
             switch (changeType) {
                 case SWITCH_EFFECT_FADE_OVER:
@@ -82,7 +84,7 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
                     drawPage(canvas);
                     break;
                 case SWITCH_EFFECT_CUBE:
-                    // drawCube(animator);
+                     drawCube(canvas);
                 default:
                 case Fields.SWITCH_EFFECT_DIAL:
                     break;
@@ -177,14 +179,70 @@ public class AnimImageView extends android.support.v7.widget.AppCompatImageView 
         float changeTag = (Float) animatorValue;
 
         int changeLength = (int)(changeTag *canvas.getWidth());
-        Rect rect1 = new Rect(0 - changeLength,0,canvas.getWidth()-changeLength,canvas.getHeight());
-        Rect rect2 = new Rect(canvas.getWidth() - changeLength,0,canvas.getWidth()*2 - changeLength,canvas.getHeight());
+        Rect rectOut = new Rect(0 - changeLength,0,canvas.getWidth()-changeLength,canvas.getHeight());
+        Rect rectIn = new Rect(canvas.getWidth() - changeLength,0,canvas.getWidth()*2 - changeLength,canvas.getHeight());
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        canvas.drawBitmap(mBitmapIn, null, rect1, paintIn);
-        canvas.drawBitmap(mBitmapOut,null,rect2,paintOut);
+        canvas.drawBitmap(mBitmapIn, null, rectIn, paintIn);
+        canvas.drawBitmap(mBitmapOut,null,rectOut,paintOut);
     }
 
+
+    /**
+     * 进行cube绘制
+     */
+    private void drawCube(Canvas canvas){
+        float changeTag = (Float) animatorValue;
+
+        Camera camera = new Camera();
+        Matrix matrix = new Matrix();
+
+
+        int changeLength = (int)(changeTag *canvas.getWidth());
+        int angle = (int) (changeTag*90);
+
+
+        camera.save();
+        camera.translate(-changeLength,0,0);
+        camera.rotateY(90- angle);
+
+
+        camera.getMatrix(matrix);
+        camera.restore();
+
+
+        matrix.preTranslate(0, -canvas.getHeight()/2);
+        matrix.postTranslate(canvas.getWidth(), canvas.getHeight()/2);
+
+        canvas.save();
+        canvas.concat(matrix);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawBitmap(mBitmapIn,null,region, paintIn);
+        canvas.restore();
+
+
+        matrix.reset();
+
+        camera.save();
+        camera.translate(canvas.getWidth()-changeLength ,0,0);
+        camera.rotateY(-angle);
+        camera.getMatrix(matrix);
+        camera.restore();
+
+        matrix.preTranslate(-canvas.getWidth(), -canvas.getHeight()/2);
+        matrix.postTranslate(0, canvas.getHeight()/2);
+
+
+        canvas.save();
+        canvas.concat(matrix);
+        canvas.drawBitmap(mBitmapOut,null,region, paintIn);
+        canvas.restore();
+
+
+
+
+
+    }
 
     private void preDraw(){
         paintIn = new Paint(Paint.ANTI_ALIAS_FLAG);

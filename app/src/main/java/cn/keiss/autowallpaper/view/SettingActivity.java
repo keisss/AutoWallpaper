@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.print.PrintJob;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
@@ -259,6 +261,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.btn_setting_display_effect:
                 setVisibleBar(mBarDisplayEffect);
+                ViewGroup
                 break;
             case R.id.btn_setting_display_type:
                 setVisibleBar(mBarDisplayPattern);
@@ -280,6 +283,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.btn_switch_page:
                 onDisplayEffectSet(Fields.SWITCH_EFFECT_PAGE);
+                break;
+            case R.id.btn_switch_cube:
+                onDisplayEffectSet(Fields.SWITCH_EFFECT_CUBE);
                 break;
             default: break;
         }
